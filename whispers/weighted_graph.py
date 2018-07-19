@@ -3,6 +3,12 @@ import numpy as np
 
 class WeightedGraph(object):
 
+    def __init__(self, descriptors):
+        self.nodes = []
+        for index, descriptor in enumerate(descriptors):
+            self.nodes.append(Node(index, descriptor))
+        self.construct_adjacency_matrix()
+
     def construct_adjacency_matrix(self):
         self.A = np.empty(( len(self), len(self) ))
         for i, node_i in enumerate(self.nodes):
@@ -22,16 +28,24 @@ class WeightedGraph(object):
                 self.A[i, j] = 1.0 / (self.A[i, j] ** 2)
             else:
                 self.A[i, j] = 0
+    
+    def step(self):
+        dict = {}
+        random_node_index = np.round(np.random.rand()*len(self.A-1))
+        for j, node in enumerate(nodes):
+            dict[node.ID] += self.A[i,j]
+        nodes[i].ID = max(dict,key=dict.get)
 
-        print(self.A)
+    def unique_classes(self):
+        return len(set(node.ID for node in nodes))
 
-    def __init__(self, descriptors):
-        self.nodes = []
-        for index, descriptor in enumerate(descriptors):
-            self.nodes.append(Node(index, descriptor))
-        self.construct_adjacency_matrix()
+    def whispers_loop(self, num_classes, max_iterations=1000):
+        i = 0
+        while self.unique_classes() > num_classes:
+            self.step()
+            i += 1
+            if i == max_iterations:
+                break
 
     def __len__(self):
         return len(self.nodes)
-
-test = WeightedGraph([np.array([1,2,3]),np.array([1,3,3]),np.array([1,2,3])])
