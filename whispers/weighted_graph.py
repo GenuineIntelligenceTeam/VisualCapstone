@@ -8,9 +8,20 @@ class WeightedGraph(object):
         for i, node_i in enumerate(self.nodes):
             for j, node_j in enumerate(self.nodes):
                 if np.isclose(node_i.distance(node_j), 0):
-                    self.A[i, j] = -1
+                    self.A[i, j] = 0
                 else:
-                    self.A[i, j] = node_i.distance(node_j) ** -2
+                    self.A[i, j] = node_i.distance(node_j)
+
+        histogram, bin_edges = np.histogram(self.A.flatten(), bins=len(self), density=True)
+        cumulative_distr = np.cumsum(histogram * np.diff(bin_edges))
+
+        threshold = np.searchsorted(cumulative_distr, 0.5)
+
+        for index in np.ndindex(self.A.shape):
+            if self.A[index] < threshold:
+                self.A[i, j] = 1.0 / (self.A[i, j] ** 2)
+            else:
+                self.A[i, j] = 0
 
         print(self.A)
 
@@ -18,7 +29,6 @@ class WeightedGraph(object):
         self.nodes = []
         for index, descriptor in enumerate(descriptors):
             self.nodes.append(Node(index, descriptor))
-
         self.construct_adjacency_matrix()
 
     def __len__(self):
