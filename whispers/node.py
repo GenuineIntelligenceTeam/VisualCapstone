@@ -1,3 +1,4 @@
+import numpy as np
 
 """
 Node in a weighted graph representing the distances in a NxN array
@@ -15,10 +16,9 @@ class Node(object):
 
         
     """
-    def __init__(self, ID, neighbor_weights, descriptor):
+    def __init__(self, ID, descriptor):
         self.ID = ID
-        self.neighbors = neighbors
         self.descriptor = descriptor
 
-    def distance(other):
+    def distance(self, other):
         return np.sqrt(np.sum((self.descriptor - other.descriptor) ** 2))
