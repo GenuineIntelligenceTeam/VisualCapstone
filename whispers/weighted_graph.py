@@ -30,8 +30,8 @@ class WeightedGraph(object):
                 self.A[i, j] = 0
     
     def step(self):
-        dict = {}
-        random_node_index = np.round(np.random.rand()*len(self.A-1))
+        dict = defaultdict(list)
+        i = np.round(np.random.rand()*len(self.A-1))
         for j, node in enumerate(nodes):
             dict[node.ID] += self.A[i,j]
         nodes[i].ID = max(dict,key=dict.get)

@@ -14,6 +14,5 @@ face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
 pics = os.listdir("./../images/")
-print(mpimg.imread("./../images/ian1.png").shape)
-image_data = np.vstack([mpimg.imread("./../images/" + pic) for pic in pics])
-print(image_data.shape)
+image_data = np.stack([mpimg.imread("./../images/" + pic) for pic in pics], axis=0)
+
