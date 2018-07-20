@@ -16,7 +16,7 @@ def get_descriptor(img, face_detect, shape_predictor, fpath):
     return fpath, descriptor
 
 pics = os.listdir("./../images/")
-image_data = np.stack([io.imread("./../images/" + pic) for pic in pics], axis=0)
+image_data = [io.imread("./../images/" + pic) for pic in pics]
 
 load_dlib_models()
 from dlib_models import models
@@ -25,7 +25,7 @@ face_rec_model = models["face rec"]
 shape_predictor = models["shape predict"]
 
 graph = WeightedGraph(get_descriptor(image, face_detect, shape_predictor, pics[i]) for i,image in enumerate(image_data))
-graph.whispers_loop(2)
+graph.whispers_loop(4)
 
 for node in graph.nodes:
     print(node.ID, node.fpath)

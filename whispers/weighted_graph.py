@@ -45,6 +45,7 @@ class WeightedGraph(object):
     def whispers_loop(self, num_classes, max_iterations=1000):
         i = 0
         while self.unique_classes() > num_classes:
+            print(self.unique_classes())
             self.step()
             i += 1
             if i == max_iterations:
