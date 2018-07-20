@@ -17,8 +17,8 @@ class WeightedGraph(object):
     """
     def __init__(self, descriptors):
         self.nodes = []
-        for index, (fpath, descriptor) in enumerate(descriptors):
-            self.nodes.append(Node(index, descriptor, fpath))
+        for index, descriptor in enumerate(descriptors):
+            self.nodes.append(Node(index, descriptor, ""))
         self.construct_adjacency_matrix()
 
     """
@@ -31,24 +31,21 @@ class WeightedGraph(object):
         # Iterate over node list twice to initialize full A-matrix
         for i, node_i in enumerate(self.nodes):
             for j, node_j in enumerate(self.nodes):
-                if np.isclose(node_i.distance(node_j), 0):
-                    self.A[i, j] = 0
-                else:
-                    self.A[i, j] = node_i.distance(node_j)
-
+                self.A[i, j] = node_i.distance(node_j)
         # Generate a histogram of all distances
         histogram, bin_edges = np.histogram(self.A.flatten(), bins=len(self), density=True)
 
         # Obtain threshold from cumulative sum
         cumulative_distr = np.cumsum(histogram * np.diff(bin_edges))
-        threshold = bin_edges[np.searchsorted(cumulative_distr, 0.1)]
-
+        threshold = bin_edges[np.searchsorted(cumulative_distr, 0.8)]
         # Apply threshold to adjacency matrix and map d --> 1/d^2
         for index in np.ndindex(self.A.shape):
-            if self.A[index] > threshold:
-                self.A[index] = 1.0 / (self.A[index] ** 2)
+            if self.A[index] == 0:
+                pass
+            elif self.A[index] < threshold:
+                 self.A[index] = 1.0 / (self.A[index] ** 2)
             else:
-                self.A[index] = 0
+                 self.A[index] = 0
 
     """
     Step through the whispers algorithm once, updating a random node based on highest
@@ -78,14 +75,15 @@ class WeightedGraph(object):
         max_iterations: int
             Maximum number of iterations to perform in cases of non-convergence.
     """
-    def whispers_loop(self, num_classes, max_iterations=1000):
+    def whispers_loop(self, max_iterations=1000):
         i = 0
-        while self.unique_classes() > num_classes:
-            print(self.unique_classes())
+        for i in range(max_iterations):
             self.step()
             i += 1
             if i == max_iterations:
                 break
+        return self.unique_classes()
+
 
     def __len__(self):
         return len(self.nodes)
