@@ -14,11 +14,12 @@ class Node(object):
         neighbor_weights: List[int]
             List of length N representing weight of edges connecting to each other node in the graph.
 
-        
+
     """
-    def __init__(self, ID, descriptor):
+    def __init__(self, ID, descriptor, fpath):
         self.ID = ID
         self.descriptor = descriptor
+        self.fpath = fpath
 
     def distance(self, other):
         return np.sqrt(np.sum((self.descriptor - other.descriptor) ** 2))
